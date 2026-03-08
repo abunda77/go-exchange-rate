@@ -45,3 +45,5 @@ temp/
 # Logs
 *.log
 logs/
+main_embedded.go
+api/client_embedded.go

@@ -38,6 +38,8 @@ Aplikasi desktop berbasis Go untuk menampilkan real-time exchange rates mengguna
 
 ### Build from Source
 
+#### Standard Version (requires .env file)
+
 ```bash
 # Clone repository
 git clone <repository-url>
@@ -52,9 +54,27 @@ cp .env.example .env
 # Build
 go build -o exchange-rate-app.exe
 
+# Or use build script
+.\build.ps1
+
 # Run
 .\exchange-rate-app.exe
 ```
+
+#### Embedded Version (no .env required)
+
+```bash
+# Build embedded version with hardcoded API key
+go build -ldflags="-H windowsgui" -o exchange-rate-app-embedded.exe main_embedded.go
+
+# Or use build script
+.\build-embedded.ps1
+
+# Run (no .env file needed)
+.\exchange-rate-app-embedded.exe
+```
+
+**⚠️ Note:** Versi embedded memiliki API key yang di-hardcode dalam binary. Ini berguna untuk distribusi tapi kurang aman. Gunakan dengan hati-hati.
 
 ## Configuration
 
@@ -97,14 +117,18 @@ Aplikasi menggunakan 3 endpoints dari use.api.co.id:
 ```
 window-app/
 ├── api/
-│   └── client.go          # HTTP client untuk API
-├── main.go                # Main application + GUI
-├── .env                   # API key configuration (gitignored)
-├── .env.example           # Template untuk .env
-├── go.mod                 # Go module dependencies
-├── go.sum                 # Dependencies checksum
-├── planning.md            # Project planning document
-└── README.md              # This file
+│   ├── client.go              # HTTP client untuk API (with env)
+│   └── client_embedded.go     # HTTP client dengan embedded API key
+├── main.go                    # Main application + GUI (standard)
+├── main_embedded.go           # Main application (embedded version)
+├── build.ps1                  # Build script untuk versi standard
+├── build-embedded.ps1         # Build script untuk versi embedded
+├── .env                       # API key configuration (gitignored)
+├── .env.example               # Template untuk .env
+├── go.mod                     # Go module dependencies
+├── go.sum                     # Dependencies checksum
+├── planning.md                # Project planning document
+└── README.md                  # This file
 ```
 
 ## Troubleshooting
@@ -118,9 +142,11 @@ window-app/
 - Update Windows ke versi terbaru
 - Download WebView2 Runtime dari [Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)
 
-### Port 8889 already in use
+### Port 8889 or 8890 already in use
 - Tutup instance aplikasi yang lain
-- Atau ubah port di `main.go` (line ~66)
+- Standard version menggunakan port 8889
+- Embedded version menggunakan port 8890
+- Atau ubah port di `main.go` atau `main_embedded.go`
 
 ## Development
 
